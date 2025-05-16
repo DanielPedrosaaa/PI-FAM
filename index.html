@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cal+Sans&display=swap" rel="stylesheet">
+    <title>Document</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Calculadora de Área e Consumo de Tinta</h1>
+        <div id ="case">
+        <label for="forma">Escolha a forma geométrica:</label>
+        <select id="forma">
+          <option value="retangulo">Retângulo</option>
+          <option value="circulo">Círculo</option>
+          <option value="quadrado">Quadrado</option>
+          <option value="triangulo">Triângulo</option>
+        </select>
+      
+        <div id="inputs-forma"></div>
+      
+        <label for="tinta">Escolha o tipo de tinta:</label>
+        <select id="tinta">
+          <option value="0.1">Tinta Látex PVA</option>
+          <option value="0.12">Tinta Látex Acrílica</option>
+          <option value="0.11">Tinta Látex Vinil-Acrílica</option>
+          <option value="0.1">Tinta Acrílica Fosca</option>
+          <option value="0.1">Tinta Acrílica Acetinada</option>
+          <option value="0.11">Tinta Acrílica Semibrilho</option>
+          <option value="0.1">Tinta Acrílica Brilhante</option>
+          <option value="0.1">Tinta a Óleo Fosca</option>
+          <option value="0.1">Tinta a Óleo Acetinada</option>
+          <option value="0.1">Tinta a Óleo Semibrilho</option>
+          <option value="0.1">Tinta a Óleo Brilhante</option>
+          <option value="0">Não usar tinta</option>
+        </select>
+      </div>
+       
+        <div class="botao-wrapper">
+          <button onclick="calcular()">Calcular</button>
+        </div>
+        <div id="resultado"></div>
+   
+      
+            
+</body>
+</html>
+
+
+<script>
+    function atualizarInputs() {
+  const forma = document.getElementById("forma").value;
+  const container = document.getElementById("inputs-forma");
+  container.innerHTML = "";
+
+  if (forma === "retangulo") {
+    container.innerHTML = `
+      <input type="number" id="altura" placeholder="Altura (m)" min="0.1" step="0.01">
+      <input type="number" id="largura" placeholder="Largura (m)" min="0.1" step="0.01">`;
+  } else if (forma === "circulo") {
+    container.innerHTML = `
+      <input type="number" id="raio" placeholder="Raio (m)" min="0.1" step="0.01">`;
+  } else if (forma === "quadrado") {
+    container.innerHTML = `
+      <input type="number" id="lado" placeholder="Lado (m)" min="0.1" step="0.01">`;
+  } else if (forma === "triangulo") {
+    container.innerHTML = `
+      <input type="number" id="base" placeholder="Base (m)" min="0.1" step="0.01">
+      <input type="number" id="altura" placeholder="Altura (m)" min="0.1" step="0.01">`;
+  }
+}
+
+function calcular() {
+  const forma = document.getElementById("forma").value;
+  const fatorConsumo = parseFloat(document.getElementById("tinta").value);
+  let area = 0;
+
+  try {
+    if (forma === "retangulo") {
+      const altura = parseFloat(document.getElementById("altura").value);
+      const largura = parseFloat(document.getElementById("largura").value);
+      area = altura * largura;
+    } else if (forma === "circulo") {
+      const raio = parseFloat(document.getElementById("raio").value);
+      area = Math.PI * raio * raio;
+    } else if (forma === "quadrado") {
+      const lado = parseFloat(document.getElementById("lado").value);
+      area = lado * lado;
+    } else if (forma === "triangulo") {
+      const base = parseFloat(document.getElementById("base").value);
+      const altura = parseFloat(document.getElementById("altura").value);
+      area = (base * altura) / 2;
+    }
+
+    const consumo = area * fatorConsumo;
+    const baldes = Math.ceil(consumo / 5);
+
+    document.getElementById("resultado").innerHTML = `
+      <p>Área: ${area.toFixed(2)} m²</p>
+      <p>Consumo estimado: ${consumo.toFixed(2)} litros</p>
+      <p>Baldes de 5L necessários: ${baldes}</p>`;
+  } catch (e) {
+    document.getElementById("resultado").innerHTML = "Erro no cálculo. Verifique os valores.";
+  }
+  document.getElementById('resultado').style.display = 'block';
+}
+
+
+document.getElementById("forma").addEventListener("change", atualizarInputs);
+atualizarInputs(); // para carregar inputs ao abrir a página
+</script>
