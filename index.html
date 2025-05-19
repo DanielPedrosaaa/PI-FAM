@@ -7,11 +7,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cal+Sans&display=swap" rel="stylesheet">
-    <title>Document</title>
+    <title>Calculadora de tinta</title>
 </head>
 <body>
     <div class="container">
-        <h1>Calculadora de Área e Consumo de Tinta</h1>
+        <h1>Calculadora de Tintas</h1>
         <div id ="case">
         <label for="forma">Escolha a forma geométrica:</label>
         <select id="forma">
@@ -28,7 +28,7 @@
           <option value="0.1">Tinta Látex PVA</option>
           <option value="0.12">Tinta Látex Acrílica</option>
           <option value="0.11">Tinta Látex Vinil-Acrílica</option>
-          <option value="0.1">Tinta Acrílica Fosca</option>
+     <!--  <option value="0.1">Tinta Acrílica Fosca</option>
           <option value="0.1">Tinta Acrílica Acetinada</option>
           <option value="0.11">Tinta Acrílica Semibrilho</option>
           <option value="0.1">Tinta Acrílica Brilhante</option>
@@ -36,7 +36,7 @@
           <option value="0.1">Tinta a Óleo Acetinada</option>
           <option value="0.1">Tinta a Óleo Semibrilho</option>
           <option value="0.1">Tinta a Óleo Brilhante</option>
-          <option value="0">Não usar tinta</option>
+          <option value="0">Não usar tinta</option>-->
         </select>
       </div>
        
@@ -53,63 +53,100 @@
 
 <script>
     function atualizarInputs() {
-  const forma = document.getElementById("forma").value;
-  const container = document.getElementById("inputs-forma");
-  container.innerHTML = "";
+        const forma = document.getElementById("forma").value;
+        const container = document.getElementById("inputs-forma");
+        container.innerHTML = "";
 
-  if (forma === "retangulo") {
-    container.innerHTML = `
-      <input type="number" id="altura" placeholder="Altura (m)" min="0.1" step="0.01">
-      <input type="number" id="largura" placeholder="Largura (m)" min="0.1" step="0.01">`;
-  } else if (forma === "circulo") {
-    container.innerHTML = `
-      <input type="number" id="raio" placeholder="Raio (m)" min="0.1" step="0.01">`;
-  } else if (forma === "quadrado") {
-    container.innerHTML = `
-      <input type="number" id="lado" placeholder="Lado (m)" min="0.1" step="0.01">`;
-  } else if (forma === "triangulo") {
-    container.innerHTML = `
-      <input type="number" id="base" placeholder="Base (m)" min="0.1" step="0.01">
-      <input type="number" id="altura" placeholder="Altura (m)" min="0.1" step="0.01">`;
-  }
-}
+        // Adicione required dinamicamente
+        if (forma === "retangulo") {
+            container.innerHTML = `
+                <input type="number" id="altura" placeholder="Altura (m)" min="0.1" step="0.01" required>
+                <input type="number" id="largura" placeholder="Largura (m)" min="0.1" step="0.01" required>`;
+        } else if (forma === "circulo") {
+            container.innerHTML = `
+                <input type="number" id="raio" placeholder="Raio (m)" min="0.1" step="0.01" required>`;
+        } else if (forma === "quadrado") {
+            container.innerHTML = `
+                <input type="number" id="lado" placeholder="Lado (m)" min="0.1" step="0.01" required>`;
+        } else if (forma === "triangulo") {
+            container.innerHTML = `
+                <input type="number" id="base" placeholder="Base (m)" min="0.1" step="0.01" required>
+                <input type="number" id="altura" placeholder="Altura (m)" min="0.1" step="0.01" required>`;
+        }
 
-function calcular() {
-  const forma = document.getElementById("forma").value;
-  const fatorConsumo = parseFloat(document.getElementById("tinta").value);
-  let area = 0;
-
-  try {
-    if (forma === "retangulo") {
-      const altura = parseFloat(document.getElementById("altura").value);
-      const largura = parseFloat(document.getElementById("largura").value);
-      area = altura * largura;
-    } else if (forma === "circulo") {
-      const raio = parseFloat(document.getElementById("raio").value);
-      area = Math.PI * raio * raio;
-    } else if (forma === "quadrado") {
-      const lado = parseFloat(document.getElementById("lado").value);
-      area = lado * lado;
-    } else if (forma === "triangulo") {
-      const base = parseFloat(document.getElementById("base").value);
-      const altura = parseFloat(document.getElementById("altura").value);
-      area = (base * altura) / 2;
+        // Adicione validação em tempo real para novos inputs
+        container.querySelectorAll('input').forEach(input => {
+            input.addEventListener('input', () => {
+                input.setCustomValidity('');
+                input.reportValidity();
+            });
+        });
     }
 
-    const consumo = area * fatorConsumo;
-    const baldes = Math.ceil(consumo / 5);
+    function validarFormulario() {
+        const inputs = document.querySelectorAll('#inputs-forma input');
+        let valido = true;
 
-    document.getElementById("resultado").innerHTML = `
-      <p>Área: ${area.toFixed(2)} m²</p>
-      <p>Consumo estimado: ${consumo.toFixed(2)} litros</p>
-      <p>Baldes de 5L necessários: ${baldes}</p>`;
-  } catch (e) {
-    document.getElementById("resultado").innerHTML = "Erro no cálculo. Verifique os valores.";
-  }
-  document.getElementById('resultado').style.display = 'block';
-}
+        inputs.forEach(input => {
+            if (!input.checkValidity()) {
+                input.reportValidity();
+                valido = false;
+            }
+        });
 
+        return valido;
+    }
 
-document.getElementById("forma").addEventListener("change", atualizarInputs);
-atualizarInputs(); // para carregar inputs ao abrir a página
+    function calcular() {
+        if (!validarFormulario()) {
+            document.getElementById("resultado").innerHTML = 
+                "❌ Preencha todos os campos corretamente (valores mínimos: 0.1)";
+            document.getElementById('resultado').style.display = 'block';
+            return;
+        }
+
+        // Restante do código de cálculo original
+        const forma = document.getElementById("forma").value;
+        const fatorConsumo = parseFloat(document.getElementById("tinta").value);
+        let area = 0;
+
+        try {
+            if (forma === "retangulo") {
+                const altura = parseFloat(document.getElementById("altura").value.replace(',', '.'));
+                const largura = parseFloat(document.getElementById("largura").value.replace(',', '.'));
+                area = altura * largura;
+            } else if (forma === "circulo") {
+                const raio = parseFloat(document.getElementById("raio").value.replace(',', '.'));
+                area = Math.PI * raio * raio;
+            } else if (forma === "quadrado") {
+                const lado = parseFloat(document.getElementById("lado").value.replace(',', '.'));
+                area = lado * lado;
+            } else if (forma === "triangulo") {
+                const base = parseFloat(document.getElementById("base").value.replace(',', '.'));
+                const altura = parseFloat(document.getElementById("altura").value.replace(',', '.'));
+                area = (base * altura) / 2;
+            }
+
+            const consumo = area * fatorConsumo;
+            const baldes = Math.ceil(consumo / 5);
+
+            document.getElementById("resultado").innerHTML = `
+                <p>✅ Área: ${area.toFixed(2)} m²</p>
+                <p>🎨 Consumo estimado: ${consumo.toFixed(2)} litros</p>
+                <p>🪣 Baldes de 5L necessários: ${baldes}</p>`;
+        } catch (e) {
+            document.getElementById("resultado").innerHTML = 
+                "❌ Erro inesperado. Verifique os valores inseridos";
+        }
+        document.getElementById('resultado').style.display = 'block';
+    }
+
+    // Atualize os listeners
+    document.getElementById("forma").addEventListener("change", () => {
+        atualizarInputs();
+        document.getElementById('resultado').style.display = 'none';
+    });
+
+    document.querySelector('button').addEventListener('click', calcular);
+    atualizarInputs();
 </script>

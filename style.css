@@ -64,12 +64,12 @@ background: linear-gradient(270deg, #11225B, #221678);
   }
   
   h1 {
-    font-size: 40px;  
+    font-size: 39px;  
     font-family: "Cal Sans", sans-serif;
         color: #fffbe6; /* Azul escuro */
     width: 100%;
     text-align: center;
-    margin: 0px;
+    padding: auto;
   }
 
   h1:hover{
@@ -128,6 +128,7 @@ input[type=number] {
     background:#00033a;
    border-radius: 16px;
   }
+
 
   
   select, input {
